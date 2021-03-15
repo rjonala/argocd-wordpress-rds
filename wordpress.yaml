@@ -1,22 +1,22 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wordpress
+  name: wordpress-rds
   labels:
-    app: wordpress
+    app: wordpress-rds
 spec:
   ports:
     - port: 80
   selector:
-    app: wordpress
-    tier: frontend
+    app: wordpress-rds
+    tier: frontend-rds
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: wp-pv-claim
   labels:
-    app: wordpress
+    app: wordpress-rds
 spec:
   accessModes:
     - ReadWriteOnce
@@ -27,37 +27,41 @@ spec:
 apiVersion: apps/v1 #  for k8s versions before 1.9.0 use apps/v1beta2  and before 1.8.0 use extensions/v1beta1
 kind: Deployment
 metadata:
-  name: wordpress
+  name: wordpress-rds
   labels:
-    app: wordpress
+    app: wordpress-rds
 spec:
   selector:
     matchLabels:
-      app: wordpress
-      tier: frontend
+      app: wordpress-rds
+      tier: frontend-rds
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: wordpress
-        tier: frontend
+        app: wordpress-rds
+        tier: frontend-rds
     spec:
       containers:
-        - image: wordpress:4.8-apache
-          name: wordpress
+        - image: wordpress:5.7.0-apache
+          name: wordpress-rds
           env:
             - name: WORDPRESS_DB_HOST
-              value: wordpress-mysql
+              value: devopsinterview.cw7qgk28g9tl.us-east-1.rds.amazonaws.com
+            - name: WORDPRESS_DB_NAME
+              value: devopsinterview
+            - name: WORDPRESS_DB_USER
+              value: devopsinterview
             - name: WORDPRESS_DB_PASSWORD
-              value: test
+              value: d3v0ps-1nt3rv13w
           ports:
             - containerPort: 80
-              name: wordpress
+              name: wordpress-rds
           volumeMounts:
-            - name: wordpress-persistent-storage
+            - name: wordpress-rds-persistent-storage
               mountPath: /var/www/html
       volumes:
-        - name: wordpress-persistent-storage
+        - name: wordpress-rds-persistent-storage
           persistentVolumeClaim:
             claimName: wp-pv-claim
