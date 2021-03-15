@@ -37,6 +37,7 @@ spec:
       tier: frontend-rds
   strategy:
     type: Recreate
+  replicas: 3
   template:
     metadata:
       labels:
