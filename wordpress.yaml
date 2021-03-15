@@ -6,7 +6,7 @@ metadata:
     app: wordpress-rds
 spec:
   ports:
-    - port: 8080
+    - port: 80
   selector:
     app: wordpress-rds
     tier: frontend-rds
