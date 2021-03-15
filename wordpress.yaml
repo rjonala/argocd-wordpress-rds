@@ -14,7 +14,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wp-pv-claim
+  name: wp-pv-claim-rds
   labels:
     app: wordpress-rds
 spec:
@@ -37,6 +37,7 @@ spec:
       tier: frontend-rds
   strategy:
     type: Recreate
+  replicas: 3
   template:
     metadata:
       labels:
@@ -64,4 +65,4 @@ spec:
       volumes:
         - name: wordpress-rds-persistent-storage
           persistentVolumeClaim:
-            claimName: wp-pv-claim
+            claimName: wp-pv-claim-rds
